@@ -1,18 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-// import App from './App';
-// import * as serviceWorker from './serviceWorker';
 
-// import RefDemo from './Lifecycle/RefDemo';
-// import FocusInput from './Lifecycle/FocusInput';
-// import AppHoc from './HOC/AppHoc';
-// import DidMount from './Lifecycle/DidMount';
-// import Child from './Lifecycle/Child';
-import Student from './component/Student';
-// import Task from './Task/Task';
-// import Learning from './Task/Learning';
+// import Student from './component/Student';
+import Parent from './Context-Api-Demo/Parent';
+import Form from './Task2/Form';
 
-ReactDOM.render( < Student /> , document.getElementById('root'));
-// ReactDOM.render(<Child /> ,document.getElementById('child'));
-// ReactDOM.unmountComponentAtNode(document.getElementById('root'))
+ReactDOM.render( < Form /> , document.getElementById('root'));
+// ReactDOM.render( < Parent /> , document.getElementById('root'));
