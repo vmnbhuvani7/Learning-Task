@@ -18,6 +18,7 @@ export class App extends Component {
     })
   }
 
+  
   deleteTodoForm = (index) => {
     const newTodo = this.state.todos.filter((todo, i) => {
       return index !== i;
