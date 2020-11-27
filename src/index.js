@@ -6,5 +6,6 @@ import './index.css';
 // import Parent from './Context-Api-Demo/Parent';
 // import Form from './Task2/Form';
 import QandA from './collaps like stackoverflow/QandA';
+import Abc from './abc';
 
-ReactDOM.render( < QandA /> , document.getElementById('root'));
+ReactDOM.render( < Abc /> , document.getElementById('root'));
