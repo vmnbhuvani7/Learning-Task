@@ -2,8 +2,9 @@ import React, { Component } from 'react'
 import Army from './Army'
 
 export class Rahul extends Component {
-    
     render() {
+        console.log("this.props.hochandleGunshot",this.props.hochandleGunshot);
+        console.log("this.props.hochandleGunshot",this.props.hocgunName);
         return (
             <div>
                 <h3 onMouseOver={this.props.hochandleGunshot}>

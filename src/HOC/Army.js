@@ -13,7 +13,7 @@ const Army = (Men, Shot) => {
         }
 
         render() {
-            console.log(this.props.rang);
+            // console.log(this.props.rang);
             return <Men 
             hocgunName="AK47" 
             hocgunShot = {this.state.gunShot}
