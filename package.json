@@ -6,10 +6,13 @@
     "axios": "^0.20.0",
     "cra-template": "1.0.3",
     "cryptico-js": "^1.1.0",
+    "i18next": "^19.8.4",
     "qrcode.react": "^1.0.0",
     "react": "^16.13.1",
     "react-bootstrap": "^1.4.0",
     "react-dom": "^16.13.1",
+    "react-i18next": "^11.7.4",
+    "react-localization": "^1.0.15",
     "react-router-dom": "^5.2.0",
     "react-scripts": "3.4.1"
   },

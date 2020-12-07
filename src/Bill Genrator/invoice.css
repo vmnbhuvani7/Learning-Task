@@ -1,0 +1,52 @@
+Button {
+    margin-left: 800px;
+    margin-top: 10px;
+}
+
+.container {
+    max-width: 800px !important;
+}
+
+.header {
+    background-color: #039dfc;
+    text-align: left;
+    height: 110px;
+    padding: 30px;
+    display: flex;
+    color: white;
+    justify-content: space-between;
+}
+
+.h1, h1 {
+    font-size: 2.5rem;
+    color: white;
+}
+
+.qbutton {
+    margin-Left: 19px
+}
+
+.Sbutton {
+    margin-Left: 10px
+}
+
+.additem {
+    margin-Left: 150px
+}
+
+th, .abc, hr {
+    color: #039dfc;
+}
+
+.dpricecolour {
+    color: #039dfc;
+    size: 100%;
+}
+
+body {
+    margin: inherit;
+}
+
+.error-color {
+    color: red;
+}

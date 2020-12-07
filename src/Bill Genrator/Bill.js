@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
 import Modal from 'react-bootstrap/Modal';
-import './bill.css';
+import './invoice.css';
+import strings from './lan';
 
 const Bill = () => {
   var d = new Date();
@@ -20,11 +21,16 @@ const Bill = () => {
 
   const [status, setStatus] = useState(false);
   const [bill, setBill] = useState(false);
-  const [show, setShow] = useState(true);
-  const [discount, setDiscount] = useState(false);
-  const [dstatus, setDstatuts] = useState(false);
-  const [discountprice, setDiscountPrice] = useState(0);
+  const [show, setShow] = useState(false);
+  const [discount, setdiscount] = useState(false);
+  const [dstatus, setdstatuts] = useState(false);
+  const [discountprice, setdiscountprice] = useState(0);
+  const handleClose = () => setShow(false);
+  const [item, setItem] = useState(1);
   const [quentity, setQuentity] = useState(1);
+  const [discountOnchangeAmount, setdiscountOnchangeAmount] = useState('');
+  const [lan, setlan] = useState('en');
+
   const [person, setPerson] = useState({
     name: '',
     address: '',
@@ -34,14 +40,25 @@ const Bill = () => {
     date: datestring,
     products: [],
   });
+
   const [product, setProduct] = useState({
     product: '',
     price: '',
     qty: quentity,
   });
 
-  const handleClose = () => setShow(false);
-  const addHandler = () => setShow(true);
+  const [validation, setvalidatioin] = useState({
+    nameerror: '',
+    addresserror: '',
+    numbererror: '',
+    gsterror: '',
+    itemnameerror: '',
+    itempriceerror: '',
+  });
+
+  const addHandler = () => {
+    setShow(true);
+  };
 
   const incrementQuentity = () => {
     setQuentity(quentity + 1);
@@ -50,6 +67,7 @@ const Bill = () => {
       qty: product.qty + 1,
     });
   };
+
   const decrementQuentity = () => {
     if (quentity > 1) {
       setQuentity(quentity - 1);
@@ -59,40 +77,72 @@ const Bill = () => {
       });
     }
   };
-
-  const Onchange = e => {
-    //changes
-    const { name, value } = e.target
-    setPerson({
-      ...person,
-      [name]: value
+  const Onchange = (e) => {
+    setPerson({ ...person, [e.target.name]: e.target.value });
+    setvalidatioin({
+      nameerror: '',
+      addresserror: '',
+      numbererror: '',
+      gsterror: '',
+      itemnameerror: '',
+      itempriceerror: '',
+      discounterror: '',
     });
   };
 
   const saveData = () => {
-    setShow(false);
-    setBill(true);
-    setStatus(true);
+    if (person.name === '') {
+      setvalidatioin({
+        nameerror: `${strings.Enter_Name}`,
+        addresserror: `${strings.Enter_Address}`,
+        numbererror: `${strings.Enter_Mobile_NO}`,
+        gsterror: `${strings.Enter_GSt}`,
+        itemnameerror: `${strings.Enter_Item_Name}`,
+        itempriceerror: `${strings.Enter_Item_Price}`,
+      });
+    } else if (person.name === '') {
+      setvalidatioin({ nameerror: `${strings.Enter_Name}` });
+    } else if (person.address === '') {
+      setvalidatioin({ addresserror: `${strings.Enter_Address}` });
+    } else if (person.number === '') {
+      setvalidatioin({ numbererror: `${strings.Enter_Mobile_NO}` });
+    } else if (person.gstnumber === '') {
+      setvalidatioin({ gsterror: `${strings.Enter_GSt}` });
+    } else if (product.product === '') {
+      setvalidatioin({ itemnameerror: `${strings.Enter_Item_Name}` });
+    } else if (product.price === '') {
+      setvalidatioin({ itempriceerror: `${strings.Enter_Item_Price}` });
+    } else {
+      setShow(false);
+      setBill(true);
+      setStatus(true);
+    }
   };
+
   const iteam = (e) => {
     setProduct({
       ...product,
       [e.target.name]: e.target.value,
     });
+    setvalidatioin({
+      nameerror: '',
+      addresserror: '',
+      numbererror: '',
+      gsterror: '',
+      itemnameerror: '',
+      itempriceerror: '',
+    });
   };
 
   const additem = () => {
-    setPerson({
-      ...person,
-      products: [...person.products, product],
-    });
     setProduct({
       product: '',
       price: '',
-      qty: quentity,
+      qty: '',
     });
+    setQuentity(1);
+    setItem(item + 1);
   };
-
   var totalprice = 0;
   let mult = 0;
   {
@@ -104,90 +154,166 @@ const Bill = () => {
   }
 
   const discountamt = () => {
-    setDiscount(true)
+    setdiscount(true);
+  };
+
+  let dprice = 0;
+  const donchange = (e) => {
+    dprice = totalprice - e.target.value;
+    setdiscountOnchangeAmount(e.target.value)
+    setdiscountprice(dprice);
+    setvalidatioin({
+      discounterror: '',
+    });
+  };
+
+  const handleCloseDiscount = () => {
+    if (discountprice > 0) {
+      setdiscount(false);
+      setdstatuts(true);
+    } else if (discountOnchangeAmount >= totalprice) {
+      setvalidatioin({
+        discounterror: 'invalid amount',
+      });
+    } else {
+      setvalidatioin({
+        discounterror: 'Enter amount',
+      });
+    }
+  };
+
+  const SaveProduct = () => {
+    setPerson({
+      ...person,
+      products: [...person.products, product],
+    });
+  };
+
+  const languages = (e) => {
+    setlan(e.target.value)
   }
 
-  let dprice = 0
-  const donchange = (e) => {
-    // console.log(e.target.value);
-    dprice = totalprice - e.target.value
-    setDiscountPrice(dprice)
-  }
-  const handleCloseDiscount = () => {
-    // console.log(dprice);
-    setDiscount(false)
-    setDstatuts(true)
-  }
+  strings.setLanguage(lan)
 
   return (
     <div>
       {status == false && (
-        <Button variant="primary" onClick={() => addHandler()}>
-          Add Details
+        <Button variant="primary" align="center" onClick={() => addHandler()}>
+          Add Bill
         </Button>
       )}
+
       <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
-          <Modal.Title className="text-center">Add Details</Modal.Title>
+          <Modal.Title className="text-center">
+            {strings.ADD_DETAILS}
+          </Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <form>
-            <legend>Customer Information:</legend>
-            <div>
-              <div class="row">
-                <div class="col-md-6">
-                  <div class="form-group">
-                    <input
-                      class="form-control"
-                      name="name"
-                      placeholder="Enter Name "
-                      onChange={e => Onchange(e)}
-                    />
-                  </div>
+            <legend>{strings.Customer_info}</legend>
+            <select
+              onChange={(e) => {
+                languages(e);
+              }}
+            >
+              <option disabled selected>
+                {strings.Select_Language}{' '}
+              </option>
+              <option value="en">English</option>
+              <option value="hi">Hindi</option>
+              <option value="gj">Gujrati</option>
 
-                  <div class="form-group">
-                    <textarea
-                      class="form-control"
-                      name="address"
-                      placeholder="Enter Address "
-                      onChange={e => Onchange(e)}
-                    ></textarea>
-                  </div>
 
-                  <div class="form-group">
-                    <input
-                      minlength="10"
-                      maxlength="10"
-                      name="number"
-                      class="form-control"
-                      onChange={e => Onchange(e)}
-                      placeholder=" Enter Mobile no: "
-                    />
-                  </div>
-                  <div class="form-group">
-                    <input
-                      type="text"
-                      name="gstnumber"
-                      class="form-control"
-                      onChange={e => Onchange(e)}
-                      placeholder="Enter Gst-No *"
-                    />
+            </select>
+            <div id="myTabContent">
+              <div
+                class="tab-pane fade show active"
+                id="home"
+                role="tabpanel"
+                aria-labelledby="home-tab"
+              >
+                <div class="row register-form">
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <input
+                        type="text"
+                        class="form-control"
+                        name="name"
+                        placeholder={strings.Enter_Name}
+                        onChange={(e) => {
+                          Onchange(e);
+                        }}
+                      />
+                      {!validation.nameerror == '' && (
+                        <p className="error-color">{validation.nameerror}</p>
+                      )}
+                    </div>
+
+                    <div class="form-group">
+                      <textarea
+                        class="form-control"
+                        name="address"
+                        placeholder={strings.Enter_Address}
+                        onChange={(e) => {
+                          Onchange(e);
+                        }}
+                      ></textarea>
+                      {!validation.addresserror == '' && (
+                        <p className="error-color">
+                          {validation.addresserror}
+                        </p>
+                      )}
+                    </div>
+
+                    <div class="form-group">
+                      <input
+                        type="text"
+                        minlength="10"
+                        maxlength="10"
+                        name="number"
+                        class="form-control"
+                        onChange={e => Onchange(e)}
+                        placeholder={strings.Enter_Mobile_NO}
+                      />
+                      {!validation.numbererror == '' && (
+                        <p className="error-color">{validation.numbererror}</p>
+                      )}
+                    </div>
+                    <div class="form-group">
+                      <input
+                        type="text"
+                        name="gstnumber"
+                        class="form-control"
+                        onChange={(e) => {
+                          Onchange(e);
+                        }}
+                        placeholder={strings.Enter_GSt}
+                      />
+                      {!validation.gsterror == '' && (
+                        <p className="error-color">{validation.gsterror}</p>
+                      )}
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
             <hr />
-            <legend className="d-flex justify-content-between"> Product Information:
+
+            <legend>
+              {strings.Product_info}
               <Button
-                className="ml-5"
+                variant="dark"
+                className="additem"
                 onClick={() => {
                   additem();
                 }}
               >
-                Add item
+                {strings.ADD_item}
               </Button>
             </legend>
-            <div class="row">
+            <h5>{strings.Item} {item}</h5>
+            <div class="row register-form">
               <div class="col-md-6">
                 <div class="form-group">
                   <input
@@ -195,9 +321,14 @@ const Bill = () => {
                     class="form-control"
                     name="product"
                     value={product.product}
-                    onChange={e => iteam(e)}
-                    placeholder="Enter Item Name"
+                    onChange={(e) => {
+                      iteam(e);
+                    }}
+                    placeholder={strings.Enter_Item_Name}
                   />
+                  {!validation.itemnameerror == '' && (
+                    <p className="error-color">{validation.itemnameerror}</p>
+                  )}
                 </div>
 
                 <div class="form-group">
@@ -206,39 +337,55 @@ const Bill = () => {
                     class="form-control"
                     name="price"
                     value={product.price}
-                    onChange={e => iteam(e)}
-                    placeholder="Enter Price"
+                    onChange={(e) => {
+                      iteam(e);
+                    }}
+                    placeholder={strings.Enter_Item_Price}
                   />
+                  {!validation.itempriceerror == '' && (
+                    <p className="error-color">{validation.itempriceerror}</p>
+                  )}
                 </div>
-
-                <div class="form-group">
-                  <Button
-                    className="ml-1 mr-2"
-                    onClick={() => incrementQuentity()}
-                  >
-                    +
-                  </Button>
-                  {quentity}
-                  <Button
-                    className="ml-2"
-                    onClick={() => decrementQuentity()}
-                  >
-                    -
-                  </Button>
-                </div>
+              </div>
+            </div>
+            <div class="form-group row">
+              <div className="col-4">
+                <Button
+                  className="ml-1 mr-2"
+                  onClick={() => incrementQuentity()}
+                >
+                  +
+                </Button>
+                {quentity}
+                <Button className="ml-2" onClick={() => decrementQuentity()}>
+                  -
+                </Button>
+              </div>
+              <div className="col-6">
+                <Button
+                  variant="success"
+                  className="Sbutton"
+                  onClick={() => {
+                    SaveProduct();
+                  }}
+                >
+                  {strings.Save_Product}
+                </Button>
               </div>
             </div>
           </form>
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleClose}>
-            Close
+            {strings.ClOSE}
           </Button>
           <Button
             variant="primary"
-            onClick={() =>saveData()}
+            onClick={() => {
+              saveData();
+            }}
           >
-            Save Changes
+            {strings.SAVE}
           </Button>
         </Modal.Footer>
       </Modal>
@@ -246,23 +393,21 @@ const Bill = () => {
       <div className="container">
         {bill && (
           <Card>
-            <Card.Header className=" text-left d-flex justify-content-between text-light bg-primary p-3">
-              <h1>Blue Soft</h1>
-              <p>
-                240 - RoyalPlaza <br/>
-                bapasitaram Chock
-                <br/>
-                Jakatnaka,Surat-394130
-              </p>
-              
+            <Card.Header className="header">
+              <h1>{strings.BLUESOFT}</h1>
+              <h8>
+                {strings.A1} <br />
+                {strings.A2}
+                <br />
+                {strings.A3}
+              </h8>
             </Card.Header>
 
             <Card.Body>
-              {<Card.Title></Card.Title>}
               <Card.Text>
                 <div className="row">
                   <div className="col-4">
-                    <h5>Billed To</h5>
+                    <h5>{strings.Billed_To}</h5>
                     <p>
                       {person.name}
                       <br />
@@ -274,25 +419,34 @@ const Bill = () => {
                     </p>
                   </div>
                   <div className="col-4">
-                    <h5>Invoice Number</h5>
+                    <h5>{strings.Invoice_Number}</h5>
                     <p>{person.billno}</p>
-                    <h6>Date of issue</h6>
+                    <h6>{strings.Date}</h6>
                     <p>{person.date}</p>
                   </div>
                   <div align="right" className="col-4">
-                    <h5>Invoice total</h5>
-                    {dstatus ? <b><h6>&#x20B9;{discountprice}</h6></b> : <h6><b>&#x20B9;{totalprice}</b></h6>}
+                    <h5>{strings.Invoice_Total}</h5>
+
+                    {dstatus ? (
+                      <h1 className="dpricecolour">
+                        <b>&#x20B9;{discountprice}</b>
+                      </h1>
+                    ) : (
+                        <h1 className="dpricecolour">
+                          <b>&#x20B9;{totalprice}</b>
+                        </h1>
+                      )}
                   </div>
                 </div>
-                <hr />
+                <hr color="#039dfc" />
 
                 <table style={{ border: '2px solid black', width: '100%' }}>
                   <thead>
                     <tr>
-                      <th>Product </th>
-                      <th>Cost</th>
-                      <th>Quentity</th>
-                      <th>Amount</th>
+                      <th>{strings.Product} </th>
+                      <th>{strings.Cost}</th>
+                      <th>{strings.Quentity}</th>
+                      <th>{strings.Amount}</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -311,17 +465,26 @@ const Bill = () => {
                   </tbody>
                 </table>
                 <div className="ml-0">
-                  <Button style={{ marginLeft: '0px ' }} onClick={() => { discountamt() }}>-</Button>
+                  <Button
+                    style={{ marginLeft: '0px ' }}
+                    onClick={() => {
+                      discountamt();
+                    }}
+                  >
+                    {strings.Discount}
+                  </Button>
                 </div>
-                <hr />
+                <hr color="#039dfc" />
                 <div className="row">
                   <div align="left" className="col-4">
                     {/* <Button>-</Button> */}
                   </div>
                   <div align="right" className="abc col-6">
-                    <h6>Sub Total:</h6>
-                    <h6>Tax:</h6>
-                    <h6>Total:</h6>
+                    <h6>{strings.Sub_Total}</h6>
+                    <h6>{strings.Tax}:</h6>
+                    <h6>{strings.Total}:</h6>
+                    {!discountOnchangeAmount == '' && <h6>{strings.Discount}:</h6>}
+
                   </div>
                   <div align="left" className="col-2">
                     <p>
@@ -329,7 +492,8 @@ const Bill = () => {
                         &#x20B9;{totalprice}
                         <br />
                         &#x20B9;0 <br />
-                        &#x20B9;{totalprice}
+                        &#x20B9;{totalprice}<br />
+                        {!discountOnchangeAmount == '' && <>&#x20B9;{discountOnchangeAmount}</>}
                       </b>
                     </p>
                   </div>
@@ -339,16 +503,24 @@ const Bill = () => {
                 <div className="row">
                   <div align="left" className="col-4">
                     <p>
-                      Invoice terms
+                      {strings.Invoice_Terms}
                       <br />
-                      <b>Ex.Please Pay Your invoice by..</b>
+                      <b>{strings.In_Text}</b>
                     </p>
                   </div>
                   <div align="right" className="abc col-6">
-                    <h6>Amount Due(USD):</h6>
+                    <h6>{strings.Amount_Due}:</h6>
                   </div>
                   <div align="left" className="col-2">
-                    {dstatus ? <p><b>&#x20B9;{discountprice}</b></p> : <p><b>&#x20B9;{totalprice}</b></p>}
+                    {dstatus ? (
+                      <p>
+                        <b>&#x20B9;{discountprice}</b>
+                      </p>
+                    ) : (
+                        <p>
+                          <b>&#x20B9;{totalprice}</b>
+                        </p>
+                      )}
                   </div>
                 </div>
               </Card.Text>
@@ -359,24 +531,30 @@ const Bill = () => {
 
       <Modal show={discount} onHide={handleCloseDiscount}>
         <Modal.Header closeButton>
-          <Modal.Title>Modal heading</Modal.Title>
+          <Modal.Title>{strings.Discount}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <div>
-            <input type="number" onChange={(e) => { donchange(e) }}></input>
+            <input
+              type="number"
+              onChange={(e) => {
+                donchange(e);
+              }}
+            ></input>
+            {!validation.discounterror == '' && (
+              <p className="error-color">{validation.discounterror}</p>
+            )}
           </div>
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleCloseDiscount}>
-            Close
+            {strings.ClOSE}
           </Button>
           <Button variant="primary" onClick={handleCloseDiscount}>
-            Save Changes
+            {strings.SAVE}
           </Button>
         </Modal.Footer>
       </Modal>
-
-
     </div>
   );
 }
