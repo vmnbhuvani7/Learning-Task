@@ -6,7 +6,6 @@ const Childe = () => {
     const fname = useContext(FirstName)
     const lname = useContext(LastName)
     const [Fname, setFname] = useState(fname)
-    // debugger
 
     useEffect(() => {
         setFname("vaman")
