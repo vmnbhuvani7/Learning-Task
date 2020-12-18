@@ -1,9 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import Bill from './Bill Genrator/bill';
-import Parent from './Context-API/Parent';
+import Captcha from './captcha code/Captcha';
 import './index.css';
-import Memo from './UseMemo/Memo';
+import SiteMap from './Site Map/SiteMap';
 
-
-ReactDOM.render( < Memo /> , document.getElementById('root'));
+ReactDOM.render(< SiteMap />, document.getElementById('root'));
