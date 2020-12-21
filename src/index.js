@@ -2,6 +2,6 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import Captcha from './captcha code/Captcha';
 import './index.css';
-import SiteMap from './Site Map/SiteMap';
+import Photo from './photo/Photo';
 
-ReactDOM.render(< SiteMap />, document.getElementById('root'));
+ReactDOM.render(< Photo />, document.getElementById('root'));
