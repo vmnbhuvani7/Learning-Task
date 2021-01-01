@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import Day from './day counter/Day';
+import Profile from './class vs function/Profile';
 import './index.css';
 
-ReactDOM.render(< Day />, document.getElementById('root'));
+ReactDOM.render(< Profile />, document.getElementById('root'));
